@@ -19,6 +19,10 @@
 		<servlet-name>spring</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-	
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/spring/*.xml</param-value>
+    </context-param>
 
 </web-app>

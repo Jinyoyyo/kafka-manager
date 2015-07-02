@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>kafka-manager</artifactId>
+        <groupId>me.bliss.kafka</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>common-dal</artifactId>
+
+    <packaging>bundle</packaging>
+
+    <build>
+        <finalName>common-dal-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>me.bliss.kafka.core.service</Bundle-SymbolicName>
+                        <!--<Export-Package>me.bliss.kafka.core.service;version=${project.version}</Export-Package>-->
+                        <Import-Package>!${project.artifactId}*,
+                            org.osgi.service.blueprint,
+                            *
+                        </Import-Package>
+                        <!--<Private-Package>me.bliss.kafka.core.service.impl</Private-Package>-->
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
