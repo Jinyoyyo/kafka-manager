@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.bliss.kafka</groupId>
         <artifactId>kafka-manager</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <groupId>me.bliss.kafka</groupId>
@@ -19,6 +19,13 @@
     <url>http://maven.apache.org</url>
 
     <dependencies>
+
+        <dependency>
+            <groupId>me.bliss.kafka</groupId>
+            <artifactId>core-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -34,10 +41,6 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
