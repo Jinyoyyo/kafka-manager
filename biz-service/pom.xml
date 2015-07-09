@@ -8,20 +8,15 @@
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>common model module</name>
 
-    <groupId>me.bliss.kafka</groupId>
-    <artifactId>core-model</artifactId>
+    <artifactId>biz-service</artifactId>
     <version>1.0.0</version>
 
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>me.bliss.kafka</groupId>
+            <artifactId>core-service</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

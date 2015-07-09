@@ -3,9 +3,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="zookeeperServcie" class="me.bliss.kafka.core.service.ZookeeperServcie" destroy-method="destory">
+    <bean id="zookeeperClient" class="me.bliss.kafka.core.service.ZookeeperClient" destroy-method="destory">
         <constructor-arg name="host" value="127.0.0.1"/>
         <constructor-arg name="port" value="2181"/>
-        <constructor-arg name="timeout" value="10000"/>
+        <constructor-arg name="timeout" value="90000"/>
+    </bean>
+
+    <bean id="kafkaClient" class="me.bliss.kafka.core.service.KafkaClient" destroy-method="destory">
+        <property name="zookeeperClient" ref="zookeeperClient"/>
+        <property name="timeout" value="90000"/>
+        <property name="bufferSize" value="102400"/>
     </bean>
 </beans>

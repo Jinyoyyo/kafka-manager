@@ -1,12 +1,15 @@
 package me.bliss.kafka.web.home.controller;
 
-import me.bliss.kafka.core.service.ZookeeperServcie;
-import org.apache.zookeeper.KeeperException;
+import me.bliss.kafka.core.service.ZookeeperClient;
+import me.bliss.kafka.core.service.exception.ZookeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  *
@@ -20,21 +23,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomeController {
 
     @Autowired
-    private ZookeeperServcie zookeeperServcie;
+    private ZookeeperClient zookeeperServcie;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String printWelcome(ModelMap model) {
+    @ResponseBody
+    public List<String> printWelcome(ModelMap model) {
         try {
-            model.addAttribute("message", zookeeperServcie.getChildrenByRecursive("/"));
-        } catch (KeeperException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+            return zookeeperServcie.getChildrenByRecursive("/");
+        } catch (ZookeeperException e) {
             e.printStackTrace();
         }
-        return "hello";
+        return null;
     }
 
-    public void setZookeeperServcie(ZookeeperServcie zookeeperServcie) {
+    public void setZookeeperServcie(ZookeeperClient zookeeperServcie) {
         this.zookeeperServcie = zookeeperServcie;
     }
 }

@@ -3,5 +3,5 @@
 
     <bean id="zookeeperServcie"
           class="me.bliss.kafka.core.service.impl.ZookeeperServiceImpl"></bean>
-    <service ref="zookeeperServcie" interface="me.bliss.kafka.core.service.ZookeeperServcie"></service>
+    <service ref="zookeeperServcie" interface="me.bliss.kafka.core.service.ZookeeperClient"></service>
 </blueprint>

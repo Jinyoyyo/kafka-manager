@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="classpath*:/META-INF/spring/core-service.xml"/>
+
+    <bean id="kafkaService" class="me.bliss.kafka.biz.service.KafkaService">
+        <property name="kafkaClient" ref="kafkaClient"/>
+    </bean>
+</beans>

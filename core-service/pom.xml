@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-
     <parent>
         <artifactId>kafka-manager</artifactId>
         <groupId>me.bliss.kafka</groupId>
@@ -16,9 +15,18 @@
     <name>kafka-manager core-service</name>
     <url>http://maven.apache.org</url>
 
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
+
+        <!--system module dependency start-->
+        <dependency>
+            <groupId>me.bliss.kafka</groupId>
+            <artifactId>core-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!--system module dependency end-->
+
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
@@ -42,6 +50,18 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>com.springsource.org.apache.commons.lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.10</artifactId>
         </dependency>
     </dependencies>
 
