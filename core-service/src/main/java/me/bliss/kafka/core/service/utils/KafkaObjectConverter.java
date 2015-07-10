@@ -19,7 +19,6 @@ public class KafkaObjectConverter {
         final KafkaBroker kafkaBroker = new KafkaBroker();
         kafkaBroker.setHost(broker.host());
         kafkaBroker.setPort(broker.port());
-        kafkaBroker.setVersion(broker.hashCode());
         return kafkaBroker;
     }
 

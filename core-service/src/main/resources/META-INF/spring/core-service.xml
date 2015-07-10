@@ -4,14 +4,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="zookeeperClient" class="me.bliss.kafka.core.service.ZookeeperClient" destroy-method="destory">
-        <property name="host" value="127.0.0.1"/>
+        <property name="host" value="qingting.manage.alipay.net"/>
         <property name="port" value="2181"/>
         <property name="timeout" value="10000"/>
     </bean>
 
     <bean id="kafkaClient" class="me.bliss.kafka.core.service.KafkaClient" destroy-method="destory">
         <property name="zookeeperClient" ref="zookeeperClient"/>
-        <property name="timeout" value="90000"/>
+        <property name="timeout" value="10000"/>
         <property name="bufferSize" value="102400"/>
     </bean>
 </beans>

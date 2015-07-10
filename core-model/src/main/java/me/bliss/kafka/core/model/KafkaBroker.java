@@ -9,14 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @version $Id: me.bliss.kafka.core.model, v 0.1 7/9/15
  *          Exp $
  */
-@JsonIgnoreProperties({"jmx_port","timestamp"})
+@JsonIgnoreProperties({ "jmx_port", "timestamp" })
 public class KafkaBroker {
+
+    private int id;
 
     private String host;
 
     private int port;
-
-    private int version;
 
     public String getHost() {
         return host;
@@ -34,19 +34,19 @@ public class KafkaBroker {
         this.port = port;
     }
 
-    public int getVersion() {
-        return version;
+    public int getId() {
+        return id;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override public String toString() {
         return new StringBuffer()
-                .append("host : ").append(host)
+                .append(" id: ").append(id)
+                .append(" host : ").append(host)
                 .append(" port : ").append(port)
-                .append(" version: ").append(version)
                 .toString();
     }
 }

@@ -16,7 +16,7 @@
 
     <!--velocity配置-->
     <bean class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
-        <property name="resourceLoaderPath" value="WEB-INF/pages"/>
+        <property name="resourceLoaderPath" value="WEB-INF/views"/>
         <!-- 模板放置位置-->
         <property name="velocityProperties">
             <props>

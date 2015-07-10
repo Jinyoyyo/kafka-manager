@@ -1,0 +1,47 @@
+#parse("../layout/head.vm")
+
+<div id="ui-grid"></div>
+<script type="text/javascript">
+	(function () {
+
+    var brokers = [];
+    var topics = [];
+
+		function getKafkaStatus() {
+			fetch('/kafka/status')
+					.then(function (res) {
+						res.json().then(function (data) {
+							console.log(data);
+						});
+					})
+		}
+
+		getKafkaStatus();
+
+		webix.ui({
+			rows: [
+				{type: "header", template: "kafka-web"},
+        {cols: [
+          {view: 'datatable',autoConfig: true, data: [
+          ]}
+        ]}
+			]
+		})
+
+		var grid = webix.ui({
+			container: 'ui-grid',
+			view: 'datatable',
+			columns:[
+				{ id:"id",	header:"", css:"rank",  		width:50},
+				{ id:"host",	header:"Host",width:200},
+				{ id:"port",	header:"Port" , width:180},
+			],
+			autoheight:true,
+			autowidth:true,
+			math: true,
+			data: brokers
+		})
+	})()
+</script>
+
+#parse("../layout/foot.vm")

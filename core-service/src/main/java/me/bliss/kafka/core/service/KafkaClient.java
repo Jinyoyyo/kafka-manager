@@ -48,12 +48,11 @@ public class KafkaClient implements InitializingBean {
 
     private void createSimpleConsumer() {
         try {
-            final Map<String, KafkaBroker> brokers = getBrokers();
-            final Set<String> keys = brokers.keySet();
-            if (keys.isEmpty()) {
+            final List<KafkaBroker> brokers = getBrokers();
+            if (brokers.isEmpty()) {
                 throw new Exception("NOT EXISTS KAFKA BROKER");
             }
-            final KafkaBroker broker = brokers.get(keys.toArray()[0]);
+            final KafkaBroker broker = brokers.get(0);
             simpleConsumer = new SimpleConsumer(
                     broker.getHost(),
                     broker.getPort(),
@@ -69,17 +68,19 @@ public class KafkaClient implements InitializingBean {
         simpleConsumer.close();
     }
 
-    public Map<String, KafkaBroker> getBrokers() throws ZookeeperException, JsonParseException {
+    public List<KafkaBroker> getBrokers() throws ZookeeperException, JsonParseException {
         try {
             final List<String> brokerIds = zookeeperClient
                     .getChildren(KafkaConstants.BROKER_IDS_PATH);
-            final Map<String, KafkaBroker> brokers = new HashMap<>();
+            final List<KafkaBroker> kafkaBrokers = new ArrayList<KafkaBroker>();
             for (String brokerId : brokerIds) {
                 String broker = zookeeperClient
                         .getData(KafkaConstants.BROKER_IDS_PATH + "/" + brokerId);
-                brokers.put(brokerId, mapper.readValue(broker, KafkaBroker.class));
+                final KafkaBroker kafkaBroker = mapper.readValue(broker, KafkaBroker.class);
+                kafkaBroker.setId(Integer.parseInt(brokerId));
+                kafkaBrokers.add(kafkaBroker);
             }
-            return brokers;
+            return kafkaBrokers;
         } catch (ZookeeperException e) {
             throw e;
         } catch (Exception e) {

@@ -18,15 +18,19 @@ import java.util.HashMap;
  *          Exp $
  */
 @Controller
-@RequestMapping("/")
 public class HomeController {
 
     @Autowired
     private KafkaService kafkaService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String printWelcome(ModelMap model) {
+        return "hello";
+    }
+
+    @RequestMapping(value ="/kafka/status",method = RequestMethod.GET)
     @ResponseBody
-    public HashMap<String, Object> printWelcome(ModelMap model) {
+    public HashMap<String, Object> getKakfaDetail() {
         return kafkaService.getKafkaStatus();
     }
 
