@@ -1,5 +1,7 @@
 package me.bliss.kafka.core.model;
 
+import java.util.List;
+
 /**
  * kafka topic model
  *
@@ -9,7 +11,23 @@ package me.bliss.kafka.core.model;
  */
 public class KafkaTopic {
 
-    private int version;
+    private String name;
 
+    private List<KafkaPartition> partitions;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<KafkaPartition> getPartitions() {
+        return partitions;
+    }
+
+    public void setPartitions(List<KafkaPartition> partitions) {
+        this.partitions = partitions;
+    }
 }

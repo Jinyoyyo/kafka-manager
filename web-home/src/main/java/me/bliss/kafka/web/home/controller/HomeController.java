@@ -1,7 +1,6 @@
 package me.bliss.kafka.web.home.controller;
 
-import me.bliss.kafka.core.service.ZookeeperClient;
-import me.bliss.kafka.core.service.exception.ZookeeperException;
+import me.bliss.kafka.biz.service.KafkaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import java.util.HashMap;
 
 /**
  *
@@ -23,20 +22,15 @@ import java.util.List;
 public class HomeController {
 
     @Autowired
-    private ZookeeperClient zookeeperServcie;
+    private KafkaService kafkaService;
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<String> printWelcome(ModelMap model) {
-        try {
-            return zookeeperServcie.getChildrenByRecursive("/");
-        } catch (ZookeeperException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public HashMap<String, Object> printWelcome(ModelMap model) {
+        return kafkaService.getKafkaStatus();
     }
 
-    public void setZookeeperServcie(ZookeeperClient zookeeperServcie) {
-        this.zookeeperServcie = zookeeperServcie;
+    public void setKafkaService(KafkaService kafkaService) {
+        this.kafkaService = kafkaService;
     }
 }

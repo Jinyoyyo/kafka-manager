@@ -4,9 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="zookeeperClient" class="me.bliss.kafka.core.service.ZookeeperClient" destroy-method="destory">
-        <constructor-arg name="host" value="127.0.0.1"/>
-        <constructor-arg name="port" value="2181"/>
-        <constructor-arg name="timeout" value="90000"/>
+        <property name="host" value="127.0.0.1"/>
+        <property name="port" value="2181"/>
+        <property name="timeout" value="10000"/>
     </bean>
 
     <bean id="kafkaClient" class="me.bliss.kafka.core.service.KafkaClient" destroy-method="destory">

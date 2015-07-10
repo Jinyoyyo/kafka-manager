@@ -7,10 +7,12 @@ import kafka.javaapi.TopicMetadataRequest;
 import kafka.javaapi.TopicMetadataResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import me.bliss.kafka.core.model.KafkaBroker;
+import me.bliss.kafka.core.model.KafkaPartition;
+import me.bliss.kafka.core.model.KafkaTopic;
 import me.bliss.kafka.core.service.exception.JsonParseException;
 import me.bliss.kafka.core.service.exception.ZookeeperException;
 import me.bliss.kafka.core.service.model.constant.KafkaConstants;
-import org.apache.commons.lang.ArrayUtils;
+import me.bliss.kafka.core.service.utils.KafkaObjectConverter;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.*;
@@ -40,7 +42,11 @@ public class KafkaClient implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
+        createSimpleConsumer();
+    }
+
+    private void createSimpleConsumer() {
         try {
             final Map<String, KafkaBroker> brokers = getBrokers();
             final Set<String> keys = brokers.keySet();
@@ -81,36 +87,38 @@ public class KafkaClient implements InitializingBean {
         }
     }
 
-    public void getTopics() {
-        try {
-            final List<String> topics = zookeeperClient.getChildren(KafkaConstants.TOPIC_PATH);
-            for (String topic : topics) {
-                final String data = zookeeperClient
-                        .getData(KafkaConstants.TOPIC_PATH + "/" + topic);
-
-            }
-        } catch (ZookeeperException e) {
-            e.printStackTrace();
-        }
+    public List<KafkaTopic> getTopics() throws ZookeeperException {
+        final List<String> topics = zookeeperClient.getChildren(KafkaConstants.TOPIC_PATH);
+        return getTopicDetail(topics);
     }
 
-    public void getLeader(String topic) {
-        final TopicMetadataRequest topicMetadataRequest = new TopicMetadataRequest(
-                Collections.singletonList(topic));
+    public List<KafkaTopic> getTopicDetail(List<String> topics) {
+        final TopicMetadataRequest topicMetadataRequest = new TopicMetadataRequest(topics);
+        final ArrayList<KafkaTopic> kafkaTopics = new ArrayList<>();
         final TopicMetadataResponse topicMetadataResponse = simpleConsumer
                 .send(topicMetadataRequest);
         final List<TopicMetadata> topicMetadatas = topicMetadataResponse.topicsMetadata();
         for (TopicMetadata topicMetadata : topicMetadatas) {
-            final List<PartitionMetadata> partitionMetadatas = topicMetadata.partitionsMetadata();
-            final Iterator<PartitionMetadata> metadataIterator = partitionMetadatas.iterator();
+            final KafkaTopic kafkaTopic = new KafkaTopic();
+            final ArrayList<KafkaPartition> kafkaPartitions = new ArrayList<>();
+            kafkaTopic.setName(topicMetadata.topic());
+            final Iterator<PartitionMetadata> metadataIterator = topicMetadata.partitionsMetadata()
+                    .iterator();
             while (metadataIterator.hasNext()) {
-                System.out.println(metadataIterator.next().isr());
+                final KafkaPartition kafkaPartition = new KafkaPartition();
+                final PartitionMetadata partitionMetadata = metadataIterator.next();
+                kafkaPartition.setId(partitionMetadata.partitionId());
+                kafkaPartition
+                        .setLeader(KafkaObjectConverter.convertBroker(partitionMetadata.leader()));
+                kafkaPartition.setReplicas(
+                        KafkaObjectConverter.batchConvertBroker(partitionMetadata.replicas()));
+                kafkaPartitions.add(kafkaPartition);
             }
-            System.out.println(ArrayUtils.toString(partitionMetadatas));
+            kafkaTopic.setPartitions(kafkaPartitions);
+            kafkaTopics.add(kafkaTopic);
         }
+        return kafkaTopics;
     }
-
-
 
     public void setZookeeperClient(ZookeeperClient zookeeperClient) {
         this.zookeeperClient = zookeeperClient;
@@ -123,4 +131,5 @@ public class KafkaClient implements InitializingBean {
     public void setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
     }
+
 }

@@ -31,7 +31,7 @@ public class KafkaClientTest extends Assert{
     @Test
     public void testGetLeader() throws Exception {
         assertNotNull(kafkaClient);
-        kafkaClient.getLeader("build");
+        kafkaClient.getTopics();
     }
 
     public void setKafkaClient(KafkaClient kafkaClient) {

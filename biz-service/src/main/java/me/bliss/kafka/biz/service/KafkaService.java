@@ -1,10 +1,13 @@
 package me.bliss.kafka.biz.service;
 
 import me.bliss.kafka.core.model.KafkaBroker;
+import me.bliss.kafka.core.model.KafkaTopic;
 import me.bliss.kafka.core.service.KafkaClient;
 import me.bliss.kafka.core.service.exception.JsonParseException;
 import me.bliss.kafka.core.service.exception.ZookeeperException;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,14 +21,20 @@ public class KafkaService {
 
     private KafkaClient kafkaClient;
 
-    public void getKafkaStatus() {
+    public HashMap<String, Object> getKafkaStatus() {
         try {
             final Map<String, KafkaBroker> brokers = kafkaClient.getBrokers();
+            final List<KafkaTopic> topics = kafkaClient.getTopics();
+            final HashMap<String, Object> kafka = new HashMap<String, Object>();
+            kafka.put("brokers",brokers);
+            kafka.put("topics",topics);
+            return kafka;
         } catch (ZookeeperException e) {
             e.printStackTrace();
         } catch (JsonParseException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public void setKafkaClient(KafkaClient kafkaClient) {

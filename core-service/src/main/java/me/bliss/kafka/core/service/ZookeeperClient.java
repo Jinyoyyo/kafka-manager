@@ -5,6 +5,7 @@ import me.bliss.kafka.core.service.model.ZookeeperWatcher;
 import org.apache.commons.lang.StringUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,11 +18,18 @@ import java.util.List;
  * @version $Id: me.bliss.kafka.core.service, v 0.1 7/1/15
  *          Exp $
  */
-public class ZookeeperClient {
+public class ZookeeperClient implements InitializingBean{
 
     private ZooKeeper zooKeeper;
 
-    public ZookeeperClient(String host, int port, int timeout) {
+    private String host;
+
+    private int port;
+
+    private int timeout;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
         try {
             zooKeeper = new ZooKeeper(host + ":" + port, timeout, null);
         } catch (IOException e) {
@@ -108,4 +116,15 @@ public class ZookeeperClient {
         return children;
     }
 
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 }
