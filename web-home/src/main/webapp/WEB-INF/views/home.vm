@@ -48,7 +48,7 @@
 					<!-- small box -->
 					<div class="small-box bg-green">
 						<div class="inner">
-							<h3>${brokers.size()}</h3>
+							<h3>$brokers.size()</h3>
 
 							<p style="display: inline-block;">Kafka Broker</p>
 							<small style="font-size: 10px;display: inline-block;margin-left: 20px;">Nodes' Num
@@ -65,7 +65,7 @@
 					<!-- small box -->
 					<div class="small-box bg-yellow">
 						<div class="inner">
-							<h3>${topics.size()}</h3>
+							<h3>$topics.size()</h3>
 
 							<p style="display: inline-block;">Kafka Topic</p>
 							<small style="font-size: 10px;display: inline-block;margin-left: 20px;">Num</small>
@@ -81,7 +81,7 @@
 					<!-- small box -->
 					<div class="small-box bg-red">
 						<div class="inner">
-							<h3>${groups.size()}</h3>
+							<h3>$groups.size()</h3>
 
 							<p style="display: inline-block;">Kafka Consumer Group</p>
 							<small style="font-size: 10px;display: inline-block;margin-left: 20px;">Num</small>
@@ -134,7 +134,6 @@
 						<div class="box-header">
 							<h3 class="box-title">Topic</h3>
 						</div>
-						<!-- /.box-header -->
 						<div class="box-body">
 							<table class="table table-bordered table-hover">
 								<thead>
@@ -152,8 +151,6 @@
 										<td>$topic.replicaIds</td>
 									</tr>
                   #end
-
-
 								</tbody>
 							</table>
 						</div>
@@ -171,7 +168,6 @@
 						<div class="box-header">
 							<h3 class="box-title">Kafka Broker</h3>
 						</div>
-						<!-- /.box-header -->
 						<div class="box-body">
 							<table class="table table-bordered table-hover">
 								<thead>
@@ -189,6 +185,31 @@
 										<td>$broker.port</td>
 									</tr>
                   #end
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="box">
+						<div class="box-header">
+							<h3 class="box-title">Kafka Consumer Group</h3>
+						</div>
+						<!-- /.box-header -->
+						<div class="box-body">
+							<table class="table table-bordered table-hover">
+								<thead>
+								<tr>
+									<th>NAME</th>
+									<th>OWNERS</th>
+								</tr>
+								</thead>
+								<tbody>
+									#foreach($group in $groups)
+									<tr>
+										<td>$group.name</td>
+										<td>$group.owners</td>
+									</tr>
+									#end
 								</tbody>
 							</table>
 						</div>

@@ -24,7 +24,7 @@ public class HomeController {
     public String index(ModelMap model) {
         model.put("brokers", kafkaService.getKafkaBrokers());
         model.put("topics",kafkaService.getKafkaTopicsMeta());
-        model.put("groups",kafkaService.getKafkaConsumerGroups());
+        model.put("groups",kafkaService.getKafkaConsumerGroupMeta());
         model.put("zookeeper",kafkaService.getZookeeperMeta());
         return "home";
     }

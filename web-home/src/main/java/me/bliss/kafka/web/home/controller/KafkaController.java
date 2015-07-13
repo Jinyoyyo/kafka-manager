@@ -2,6 +2,7 @@ package me.bliss.kafka.web.home.controller;
 
 import me.bliss.kafka.biz.service.KafkaService;
 import me.bliss.kafka.core.model.KafkaBroker;
+import me.bliss.kafka.core.model.KafkaConsumerGroup;
 import me.bliss.kafka.core.model.KafkaTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +43,12 @@ public class KafkaController {
     @ResponseBody
     public HashMap<String, Object> getKakfaDetail() {
         return kafkaService.getKafkaStatus();
+    }
+
+    @RequestMapping(value = "/group",method = RequestMethod.GET)
+    @ResponseBody
+    public List<KafkaConsumerGroup> getKafkaConsumerGroups(){
+        return kafkaService.getKafkaConsumerGroups();
     }
 
     public void setKafkaService(KafkaService kafkaService) {

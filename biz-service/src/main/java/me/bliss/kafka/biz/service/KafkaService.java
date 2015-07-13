@@ -82,6 +82,27 @@ public class KafkaService {
         return new ArrayList<>();
     }
 
+    public ArrayList<KafkaConsumerGroupMeta> getKafkaConsumerGroupMeta(){
+        try {
+            final List<KafkaConsumerGroup> consumerGroups = kafkaClient.getConsumerGroup();
+            final ArrayList<KafkaConsumerGroupMeta> kafkaConsumerGroupMetas = new ArrayList<>();
+            for(KafkaConsumerGroup kafkaConsumerGroup : consumerGroups){
+                final KafkaConsumerGroupMeta kafkaConsumerGroupMeta = new KafkaConsumerGroupMeta();
+                final List<String> owners = new ArrayList<>();
+                for (KafkaTopicOffset kafkaTopicOffset : kafkaConsumerGroup.getOwners()){
+                    owners.add(kafkaTopicOffset.getName());
+                }
+                kafkaConsumerGroupMeta.setName(kafkaConsumerGroup.getName());
+                kafkaConsumerGroupMeta.setOwners(owners);
+                kafkaConsumerGroupMetas.add(kafkaConsumerGroupMeta);
+            }
+            return kafkaConsumerGroupMetas;
+        } catch (ZookeeperException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public HashMap<String, Object> getKafkaStatus() {
         try {
             final List<KafkaBroker> brokers = kafkaClient.getBrokers();
