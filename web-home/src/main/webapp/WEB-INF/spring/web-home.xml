@@ -13,6 +13,8 @@
     <context:component-scan base-package="me.bliss.kafka.web.home.controller"/>
 
     <mvc:annotation-driven/>
+    <mvc:resources mapping="/static/**" location="/static/" />
+    <mvc:default-servlet-handler />
 
     <!--velocity配置-->
     <bean class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @version $Id: me.bliss.kafka.core.model, v 0.1 7/9/15
  *          Exp $
  */
-@JsonIgnoreProperties({ "jmx_port", "timestamp" })
+@JsonIgnoreProperties({ "jmx_port", "timestamp" ,"version"})
 public class KafkaBroker {
 
     private int id;

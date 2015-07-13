@@ -1,5 +1,6 @@
 package me.bliss.kafka.core.service.test;
 
+import me.bliss.kafka.core.model.KafkaTopicOffset;
 import me.bliss.kafka.core.service.KafkaClient;
 import org.junit.Assert;
 import org.junit.Test;
@@ -7,6 +8,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * kafka client test class
@@ -32,6 +36,14 @@ public class KafkaClientTest extends Assert{
     public void testGetLeader() throws Exception {
         assertNotNull(kafkaClient);
         kafkaClient.getTopics();
+    }
+
+    @Test
+    public void testGetEarliestOffset() throws Exception {
+        assertNotNull(kafkaClient);
+        final List<KafkaTopicOffset> offsets = kafkaClient.getEarliestOffset(
+                Collections.singletonList("build"));
+        System.out.println(offsets);
     }
 
     public void setKafkaClient(KafkaClient kafkaClient) {

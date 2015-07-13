@@ -1,17 +1,15 @@
 package me.bliss.kafka.core.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kafka.javaapi.PartitionMetadata;
-import kafka.javaapi.TopicMetadata;
-import kafka.javaapi.TopicMetadataRequest;
-import kafka.javaapi.TopicMetadataResponse;
+import kafka.api.PartitionOffsetRequestInfo;
+import kafka.common.TopicAndPartition;
+import kafka.javaapi.*;
 import kafka.javaapi.consumer.SimpleConsumer;
-import me.bliss.kafka.core.model.KafkaBroker;
-import me.bliss.kafka.core.model.KafkaPartition;
-import me.bliss.kafka.core.model.KafkaTopic;
+import me.bliss.kafka.core.model.*;
 import me.bliss.kafka.core.service.exception.JsonParseException;
 import me.bliss.kafka.core.service.exception.ZookeeperException;
 import me.bliss.kafka.core.service.model.constant.KafkaConstants;
+import me.bliss.kafka.core.service.utils.KafkaConsumerFactory;
 import me.bliss.kafka.core.service.utils.KafkaObjectConverter;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -50,7 +48,7 @@ public class KafkaClient implements InitializingBean {
         try {
             final List<KafkaBroker> brokers = getBrokers();
             if (brokers.isEmpty()) {
-                throw new Exception("NOT EXISTS KAFKA BROKER");
+                throw new ZookeeperException("NOT EXISTS KAFKA BROKER");
             }
             final KafkaBroker broker = brokers.get(0);
             simpleConsumer = new SimpleConsumer(
@@ -59,8 +57,10 @@ public class KafkaClient implements InitializingBean {
                     timeout,
                     bufferSize,
                     String.valueOf(new Date().getTime()));
-        } catch (Exception e) {
+        } catch (ZookeeperException e) {
             throw new RuntimeException("CREATE BROKER CONNECTION FAIL!");
+        } catch (JsonParseException e) {
+            throw new RuntimeException("KAFKA BROKER META ERROR!");
         }
     }
 
@@ -119,6 +119,78 @@ public class KafkaClient implements InitializingBean {
             kafkaTopics.add(kafkaTopic);
         }
         return kafkaTopics;
+    }
+
+    public HashMap<Integer, KafkaBroker> getTopicLeaderInfo(String topic) {
+        final KafkaTopic topicDetail = getTopicDetail(Collections.singletonList(topic)).get(0);
+        final List<KafkaPartition> partitions = topicDetail.getPartitions();
+        final HashMap<Integer, KafkaBroker> leaders = new HashMap<>();
+        for (KafkaPartition kafkaPartition : partitions) {
+            leaders.put(kafkaPartition.getId(), kafkaPartition.getLeader());
+        }
+        return leaders;
+    }
+
+    public KafkaBroker getLeaderInfoByTopicAndPartition(String topic, int partition) {
+        final KafkaTopic topicDetail = getTopicDetail(Collections.singletonList(topic)).get(0);
+        for (KafkaPartition kafkaPartition : topicDetail.getPartitions()) {
+            if (kafkaPartition.getId() == partition) {
+                return kafkaPartition.getLeader();
+            }
+        }
+        return new KafkaBroker();
+    }
+
+    public List<KafkaTopicOffset> getEarliestOffset(List<String> topic) {
+        final List<KafkaTopic> topicDetail = getTopicDetail(topic);
+        final ArrayList<KafkaTopicOffset> kafkaTopicOffsets = new ArrayList<>();
+        for (KafkaTopic kafkaTopic : topicDetail) {
+            final KafkaTopicOffset kafkaTopicOffset = new KafkaTopicOffset();
+            final ArrayList<KafkaPartitionOffset> kafkaPartitionOffsets = new ArrayList<>();
+            for (KafkaPartition kafkaPartition : kafkaTopic.getPartitions()) {
+                final KafkaPartitionOffset kafkaPartitionOffset = new KafkaPartitionOffset();
+                kafkaPartitionOffset.setEarliest(
+                        getEarliestOffset(kafkaTopic.getName(), kafkaPartition.getId())
+                );
+                kafkaPartitionOffset.setLatest(
+                        getLatestOffset(kafkaTopic.getName(), kafkaPartition.getId())
+                );
+                kafkaPartitionOffsets.add(kafkaPartitionOffset);
+            }
+            kafkaTopicOffset.setName(kafkaTopic.getName());
+            kafkaTopicOffset.setKafkaPartitionOffsets(kafkaPartitionOffsets);
+            kafkaTopicOffsets.add(kafkaTopicOffset);
+        }
+        return kafkaTopicOffsets;
+    }
+
+    public long getEarliestOffset(String topic, int partition) {
+        return execOffsetRequest(topic, partition, kafka.api.OffsetRequest.EarliestTime());
+    }
+
+    public long getLatestOffset(String topic, int partition) {
+        return execOffsetRequest(topic, partition, kafka.api.OffsetRequest.LatestTime());
+    }
+
+    private long execOffsetRequest(String topic, int partition, long time) {
+        final KafkaBroker leader = getLeaderInfoByTopicAndPartition(topic, partition);
+        final SimpleConsumer simpleConsumer = KafkaConsumerFactory
+                .createSimpleConsumer(leader.getHost(), leader.getPort());
+        final Map<TopicAndPartition, PartitionOffsetRequestInfo> requestInfo = new HashMap<>();
+        requestInfo.put(
+                new TopicAndPartition(topic, partition),
+                new PartitionOffsetRequestInfo(time, 1)
+        );
+        final OffsetRequest offsetRequest = new OffsetRequest(requestInfo,
+                kafka.api.OffsetRequest.CurrentVersion(), simpleConsumer.clientId());
+        final OffsetResponse offsetResponse = simpleConsumer.getOffsetsBefore(offsetRequest);
+        KafkaConsumerFactory.freeSimpleConsumer(simpleConsumer);
+        if (offsetResponse.hasError()) {
+            //TODO offset error handle
+            System.err.println("GET OFFSET ERROR!");
+            return 0;
+        }
+        return offsetResponse.offsets(topic, partition)[0];
     }
 
     public void setZookeeperClient(ZookeeperClient zookeeperClient) {
