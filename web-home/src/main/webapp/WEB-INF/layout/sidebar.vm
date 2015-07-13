@@ -18,10 +18,17 @@
 			<li class="header">MAIN NAVIGATION</li>
 
 			<li class="active treeview">
-				<a href="#">
+				<a href="#nowhere">
 					<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 				</a>
 			</li>
+
+			<li class="treeview">
+				<a href="#nowhere">
+					<i class="fa fa-files-0"></i> <span>Broker</span>
+				</a>
+			</li>
+
 		</ul>
 	</section>
 	<!-- /.sidebar -->
