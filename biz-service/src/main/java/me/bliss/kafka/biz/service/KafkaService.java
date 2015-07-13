@@ -1,14 +1,14 @@
 package me.bliss.kafka.biz.service;
 
-import me.bliss.kafka.core.model.KafkaBroker;
-import me.bliss.kafka.core.model.KafkaTopic;
+import me.bliss.kafka.core.model.*;
+import me.bliss.kafka.core.model.zookeeper.ZookeeperMeta;
 import me.bliss.kafka.core.service.KafkaClient;
+import me.bliss.kafka.core.service.ZookeeperClient;
 import me.bliss.kafka.core.service.exception.JsonParseException;
 import me.bliss.kafka.core.service.exception.ZookeeperException;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * kafka service,provide some advanced method
@@ -21,7 +21,14 @@ public class KafkaService {
 
     private KafkaClient kafkaClient;
 
-    public List<KafkaBroker> getKafkaBrokers(){
+    @Autowired
+    private ZookeeperClient zookeeperClient;
+
+    public ZookeeperMeta getZookeeperMeta() {
+        return zookeeperClient.getZookeeperMeta();
+    }
+
+    public List<KafkaBroker> getKafkaBrokers() {
         try {
             return kafkaClient.getBrokers();
         } catch (ZookeeperException e) {
@@ -32,9 +39,43 @@ public class KafkaService {
         return new ArrayList<>();
     }
 
-    public List<KafkaTopic> getKafkaTopics(){
+    public List<KafkaTopic> getKafkaTopics() {
         try {
             return kafkaClient.getTopics();
+        } catch (ZookeeperException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<KafkaTopicMeta> getKafkaTopicsMeta() {
+        try {
+            final List<KafkaTopicMeta> kafkaTopicMetas = new ArrayList<>();
+            for (KafkaTopic kafkaTopic : kafkaClient.getTopics()) {
+                final KafkaTopicMeta kafkaTopicMeta = new KafkaTopicMeta();
+                final List<Integer> partitionIds = new ArrayList<>();
+                final Set<Integer> replicaIds = new HashSet<>();
+                for (KafkaPartition kafkaPartition : kafkaTopic.getPartitions()) {
+                    for (KafkaBroker kafkaBroker : kafkaPartition.getReplicas()) {
+                        replicaIds.add(kafkaBroker.getId());
+                    }
+                    partitionIds.add(kafkaPartition.getId());
+                }
+                kafkaTopicMeta.setName(kafkaTopic.getName());
+                kafkaTopicMeta.setPartitionIds(partitionIds);
+                kafkaTopicMeta.setReplicaIds(replicaIds);
+                kafkaTopicMetas.add(kafkaTopicMeta);
+            }
+            return kafkaTopicMetas;
+        } catch (ZookeeperException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<KafkaConsumerGroup> getKafkaConsumerGroups() {
+        try {
+            return kafkaClient.getConsumerGroup();
         } catch (ZookeeperException e) {
             e.printStackTrace();
         }
@@ -46,8 +87,8 @@ public class KafkaService {
             final List<KafkaBroker> brokers = kafkaClient.getBrokers();
             final List<KafkaTopic> topics = kafkaClient.getTopics();
             final HashMap<String, Object> kafka = new HashMap<String, Object>();
-            kafka.put("brokers",brokers);
-            kafka.put("topics",topics);
+            kafka.put("brokers", brokers);
+            kafka.put("topics", topics);
             return kafka;
         } catch (ZookeeperException e) {
             e.printStackTrace();
@@ -59,5 +100,9 @@ public class KafkaService {
 
     public void setKafkaClient(KafkaClient kafkaClient) {
         this.kafkaClient = kafkaClient;
+    }
+
+    public void setZookeeperClient(ZookeeperClient zookeeperClient) {
+        this.zookeeperClient = zookeeperClient;
     }
 }

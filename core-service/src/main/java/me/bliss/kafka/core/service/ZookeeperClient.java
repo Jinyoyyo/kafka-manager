@@ -1,5 +1,6 @@
 package me.bliss.kafka.core.service;
 
+import me.bliss.kafka.core.model.zookeeper.ZookeeperMeta;
 import me.bliss.kafka.core.service.exception.ZookeeperException;
 import me.bliss.kafka.core.service.model.ZookeeperWatcher;
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +36,15 @@ public class ZookeeperClient implements InitializingBean{
         } catch (IOException e) {
             throw new RuntimeException("CREATE ZOOKEEPER CONNECTION FAIL!");
         }
+    }
+
+    public ZookeeperMeta getZookeeperMeta(){
+        //TODO GET MOLTI ZOOKEEPER NODES
+        final ZookeeperMeta zookeeperMeta = new ZookeeperMeta();
+        zookeeperMeta.setHost(host);
+        zookeeperMeta.setPort(port);
+        zookeeperMeta.setTimeout(timeout);
+        return zookeeperMeta;
     }
 
     public void destory() {
@@ -127,4 +137,5 @@ public class ZookeeperClient implements InitializingBean{
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
+
 }

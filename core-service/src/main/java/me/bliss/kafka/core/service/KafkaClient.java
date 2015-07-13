@@ -68,6 +68,7 @@ public class KafkaClient implements InitializingBean {
         simpleConsumer.close();
     }
 
+
     public List<KafkaBroker> getBrokers() throws ZookeeperException, JsonParseException {
         try {
             final List<String> brokerIds = zookeeperClient
@@ -91,6 +92,40 @@ public class KafkaClient implements InitializingBean {
     public List<KafkaTopic> getTopics() throws ZookeeperException {
         final List<String> topics = zookeeperClient.getChildren(KafkaConstants.TOPIC_PATH);
         return getTopicDetail(topics);
+    }
+
+    public List<KafkaConsumerGroup> getConsumerGroup() throws ZookeeperException {
+        final List<String> groups = zookeeperClient.getChildren(KafkaConstants.CONSUMER_GROUP);
+        final ArrayList<KafkaConsumerGroup> kafkaConsumerGroups = new ArrayList<>();
+        for (String group : groups) {
+            //get group owners
+            final List<String> topics = zookeeperClient
+                    .getChildren(KafkaConstants.CONSUMER_GROUP + "/" + group + "/offsets");
+            final KafkaConsumerGroup kafkaConsumerGroup = new KafkaConsumerGroup();
+            final ArrayList<KafkaTopicOffset> kafkaTopicOffsets = new ArrayList<>();
+            for (String topic : topics) {
+                final KafkaTopicOffset kafkaTopicOffset = new KafkaTopicOffset();
+                final ArrayList<KafkaPartitionOffset> kafkaPartitionOffsets = new ArrayList<>();
+                final List<String> partitions = zookeeperClient.getChildren(
+                        KafkaConstants.CONSUMER_GROUP + "/" + group + "/offsets/" + topic);
+                for (String partition : partitions) {
+                    final KafkaPartitionOffset kafkaPartitionOffset = new KafkaPartitionOffset();
+                    final String offset = zookeeperClient.getData(
+                            KafkaConstants.CONSUMER_GROUP + "/" + group + "/offsets/" + topic + "/"
+                            + partition);
+                    kafkaPartitionOffset.setId(Integer.parseInt(partition));
+                    kafkaPartitionOffset.setLatest(Integer.parseInt(offset));
+                    kafkaPartitionOffsets.add(kafkaPartitionOffset);
+                }
+                kafkaTopicOffset.setName(topic);
+                kafkaTopicOffset.setKafkaPartitionOffsets(kafkaPartitionOffsets);
+                kafkaTopicOffsets.add(kafkaTopicOffset);
+            }
+            kafkaConsumerGroup.setName(group);
+            kafkaConsumerGroup.setOwners(kafkaTopicOffsets);
+            kafkaConsumerGroups.add(kafkaConsumerGroup);
+        }
+        return kafkaConsumerGroups;
     }
 
     public List<KafkaTopic> getTopicDetail(List<String> topics) {
