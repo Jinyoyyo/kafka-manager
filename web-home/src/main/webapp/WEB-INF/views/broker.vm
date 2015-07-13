@@ -1,0 +1,162 @@
+#parse("../layout/head.vm")
+
+<div class="wrapper">
+
+	#parse("../layout/nav.vm")
+	#parse("../layout/sidebar.vm");
+
+
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper" style="margin-top: -20px;">
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1>
+				Kafka Broker
+				<small>Control panel</small>
+			</h1>
+			<ol class="breadcrumb">
+				<li><a href="#"><i class="fa fa-dashboard"></i> Kafka</a></li>
+				<li class="active">Broker</li>
+			</ol>
+		</section>
+
+		<!-- Main content -->
+		<section class="content">
+			<!-- Small boxes (Stat box) -->
+			<div class="row">
+			</div>
+			<!-- /.row -->
+
+
+			<!-- Main row -->
+			<div class="row">
+				<!-- Left col -->
+				<section class="col-lg-7 connectedSortable">
+
+					<div class="box">
+						<div class="box-header">
+							<h3 class="box-title">Zookeeper</h3>
+						</div>
+						<!-- /.box-header -->
+						<div class="box-body">
+							<table class="table table-bordered table-hover">
+								<thead>
+								<tr>
+									<th>HOST</th>
+									<th>PORT</th>
+									<th>TIMEOUT(ms)</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td>$zookeeper.host</td>
+									<td>$zookeeper.port</td>
+									<td>$zookeeper.timeout</td>
+								</tr>
+
+								</tbody>
+							</table>
+						</div>
+						<!-- /.box-body -->
+					</div>
+					<!-- /.box -->
+
+					<div class="box">
+						<div class="box-header">
+							<h3 class="box-title">Topic</h3>
+						</div>
+						<div class="box-body">
+							<table class="table table-bordered table-hover">
+								<thead>
+								<tr>
+									<th>NAME</th>
+									<th>PARTITIONS</th>
+									<th>REPLICAS</th>
+								</tr>
+								</thead>
+								<tbody>
+									#foreach($topic in $topics)
+									<tr>
+										<td>$topic.name</td>
+										<td>$topic.partitionIds</td>
+										<td>$topic.replicaIds</td>
+									</tr>
+									#end
+								</tbody>
+							</table>
+						</div>
+						<!-- /.box-body -->
+					</div>
+					<!-- /.box -->
+
+
+				</section>
+				<!-- /.Left col -->
+				<!-- right col (We are only adding the ID to make the widgets sortable)-->
+				<section class="col-lg-5 connectedSortable">
+
+					<div class="box">
+						<div class="box-header">
+							<h3 class="box-title">Kafka Broker</h3>
+						</div>
+						<div class="box-body">
+							<table class="table table-bordered table-hover">
+								<thead>
+								<tr>
+									<th>ID</th>
+									<th>HOST</th>
+									<th>PORT</th>
+								</tr>
+								</thead>
+								<tbody>
+									#foreach($broker in $brokers)
+									<tr>
+										<td>$broker.id</td>
+										<td>$broker.host</td>
+										<td>$broker.port</td>
+									</tr>
+									#end
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="box">
+						<div class="box-header">
+							<h3 class="box-title">Kafka Consumer Group</h3>
+						</div>
+						<!-- /.box-header -->
+						<div class="box-body">
+							<table class="table table-bordered table-hover">
+								<thead>
+								<tr>
+									<th>NAME</th>
+									<th>OWNERS</th>
+								</tr>
+								</thead>
+								<tbody>
+									#foreach($group in $groups)
+									<tr>
+										<td>$group.name</td>
+										<td>$group.owners</td>
+									</tr>
+									#end
+								</tbody>
+							</table>
+						</div>
+						<!-- /.box-body -->
+					</div>
+					<!-- /.box -->
+				</section>
+				<!-- /.content -->
+			</div>
+			<!-- /.content-wrapper -->
+		</section>
+	</div>
+	<!-- Add the sidebar's background. This div must be placed
+immediately after the control sidebar -->
+	<div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+#parse("../layout/foot.vm")

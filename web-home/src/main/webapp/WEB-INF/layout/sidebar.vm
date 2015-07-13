@@ -16,19 +16,17 @@
 		<!-- sidebar menu: : style can be found in sidebar.less -->
 		<ul class="sidebar-menu">
 			<li class="header">MAIN NAVIGATION</li>
-
 			<li class="active treeview">
-				<a href="#nowhere">
+				<a href="/">
 					<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 				</a>
 			</li>
 
 			<li class="treeview">
-				<a href="#nowhere">
+				<a href="/brokers">
 					<i class="fa fa-files-0"></i> <span>Broker</span>
 				</a>
 			</li>
-
 		</ul>
 	</section>
 	<!-- /.sidebar -->

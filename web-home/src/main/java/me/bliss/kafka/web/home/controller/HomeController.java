@@ -29,6 +29,11 @@ public class HomeController {
         return "home";
     }
 
+    @RequestMapping(value = "/brokers",method = RequestMethod.GET)
+    public String getBrokers(ModelMap model){
+        return "broker";
+    }
+
     public void setKafkaService(KafkaService kafkaService) {
         this.kafkaService = kafkaService;
     }

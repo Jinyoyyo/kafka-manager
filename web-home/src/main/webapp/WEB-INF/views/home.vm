@@ -204,28 +204,28 @@
 								</tr>
 								</thead>
 								<tbody>
-									#foreach($group in $groups)
+                  #foreach($group in $groups)
 									<tr>
 										<td>$group.name</td>
 										<td>$group.owners</td>
 									</tr>
-									#end
+                  #end
 								</tbody>
 							</table>
 						</div>
 						<!-- /.box-body -->
 					</div>
 					<!-- /.box -->
-
 				</section>
 				<!-- /.content -->
 			</div>
 			<!-- /.content-wrapper -->
-
-			<!-- Add the sidebar's background. This div must be placed
-   immediately after the control sidebar -->
-			<div class="control-sidebar-bg"></div>
+		</section>
 	</div>
-	<!-- ./wrapper -->
+	<!-- Add the sidebar's background. This div must be placed
+immediately after the control sidebar -->
+	<div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
 
 #parse("../layout/foot.vm")
