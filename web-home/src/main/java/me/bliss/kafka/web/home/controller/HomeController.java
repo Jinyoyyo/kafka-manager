@@ -22,10 +22,10 @@ public class HomeController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(ModelMap model) {
+        model.put("zookeeper",kafkaService.getZookeeperMeta());
         model.put("brokers", kafkaService.getKafkaBrokers());
         model.put("topics",kafkaService.getKafkaTopicsMeta());
         model.put("groups",kafkaService.getKafkaConsumerGroupMeta());
-        model.put("zookeeper",kafkaService.getZookeeperMeta());
         return "home";
     }
 
